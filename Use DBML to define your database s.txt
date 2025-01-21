@@ -65,3 +65,77 @@ Ref: Product_Details.cat_id > Categories.id
 Ref: Product_Details.price_id > Price_details.id
 Ref : Order_details.user_id > User_Details.id
 Ref : Order_details.Product_id> Product_Details.id
+
+
+
+
+------------
+
+
+-- Table: Role
+CREATE TABLE Role (
+    id INT PRIMARY KEY,            -- Primary key
+    role VARCHAR(255) NOT NULL,    -- Role description
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Timestamp for creation
+);
+
+-- Table: Users
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY,          -- Primary key
+    user_name VARCHAR(255) NOT NULL,  -- Username
+    user_pwd VARCHAR(255) NOT NULL,   -- Password
+    user_role INT NOT NULL,           -- Foreign key to Role table
+    status BOOLEAN NOT NULL,          -- User status
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
+    CONSTRAINT fk_user_role FOREIGN KEY (user_role) REFERENCES Role (id) ON DELETE CASCADE
+);
+
+-- Table: User_Details
+CREATE TABLE User_Details (
+    id INT PRIMARY KEY,                  -- Primary key
+    user_id INT NOT NULL,                -- Foreign key to Users table
+    address VARCHAR(255),                -- Address field
+    email VARCHAR(255) UNIQUE,           -- Email (should be unique)
+    phone VARCHAR(20),                   -- Phone number
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
+    CONSTRAINT fk_user_details_user FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE CASCADE
+);
+
+-- Table: Categories
+CREATE TABLE Categories (
+    id INT PRIMARY KEY,                  -- Primary key
+    name VARCHAR(255) NOT NULL,          -- Category name
+    cat_desc VARCHAR(255),               -- Category description
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Creation timestamp
+);
+
+-- Table: Product_Details
+CREATE TABLE Product_Details (
+    id INT PRIMARY KEY,                  -- Primary key
+    cat_id INT NOT NULL,                 -- Foreign key to Categories
+    product_name VARCHAR(255) NOT NULL, -- Product name
+    count INT,                           -- Product count
+    price_id INT NOT NULL,               -- Foreign key to Price_Details
+    status BOOLEAN NOT NULL,             -- Product status
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
+    CONSTRAINT fk_product_category FOREIGN KEY (cat_id) REFERENCES Categories (id) ON DELETE CASCADE,
+    CONSTRAINT fk_product_price FOREIGN KEY (price_id) REFERENCES Price_Details (id) ON DELETE CASCADE
+);
+
+-- Table: Price_Details
+CREATE TABLE Price_Details (
+    id INT PRIMARY KEY,                  -- Primary key
+    price FLOAT NOT NULL,                -- Product price
+    discount FLOAT DEFAULT 0,            -- Discount percentage
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Creation timestamp
+);
+
+-- Table: Order_Details
+CREATE TABLE Order_Details (
+    id INT PRIMARY KEY,                  -- Primary key
+    user_id INT NOT NULL,                -- Foreign key to User_Details
+    product_id INT NOT NULL,             -- Foreign key to Product_Details
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
+    CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES User_Details (id) ON DELETE CASCADE,
+    CONSTRAINT fk_order_product FOREIGN KEY (product_id) REFERENCES Product_Details (id) ON DELETE CASCADE
+);
