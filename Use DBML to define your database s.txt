@@ -1,0 +1,67 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Users {
+  user_id integer [primary key]
+  user_name integer
+  user_Pwd varchar
+  user_Role interger
+  status bool
+  created_at timestamp 
+}
+
+Table Role {
+  id integer [primary key]  
+  role varchar
+  created_at timestamp
+}
+
+Table User_Details {
+id integer [primary key]
+User_id integer
+Address varchar
+email varchar
+phone varchar
+created_at timestamp 
+}
+
+Table Categories {
+id integer [primary key]
+name varchar
+cat_desc varchar
+created_at timestamp 
+}
+
+Table Product_Details {
+  id integer [primary key]
+  cat_id varchar   
+  product_name varchar
+  count integer
+  price_id integer
+  status bool 
+  created_at timestamp
+}
+
+Table Price_details
+{
+  id integrer
+  price float
+  discount float
+  created_at timestamp
+
+}
+
+Table Order_details
+{
+  id integrer
+  user_id float
+  Product_id integer  
+  created_at timestamp
+}
+
+Ref: Users.user_Role > Role.id // many-to-one
+Ref: Users.user_id > User_Details.User_id
+Ref: Product_Details.cat_id > Categories.id
+Ref: Product_Details.price_id > Price_details.id
+Ref : Order_details.user_id > User_Details.id
+Ref : Order_details.Product_id> Product_Details.id
