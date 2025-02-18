@@ -47,3 +47,35 @@ return (
 }
 
 root.render(<Annimal />)
+
+
+
+
+------
+
+import { useState } from "react";
+import bulbOn from "../images/LightOn.png";
+import bulbOff from "../images/LightOff.png";
+
+function LightsOnOff(){
+    const[isOn,isOff]=useState(false);
+    function handleLightOnOff()
+    {
+        
+        return (
+            <div>         
+            
+                <img src={isOn ? bulnOn:bulbOff} alt="bulb" width="200" height="200"/>
+                
+            </div>
+        )
+    }
+    return(
+        <>
+        <button onClick={handleLightOnOff}>Switch</button>
+        </>
+    )
+
+
+}
+export default LightsOnOff
