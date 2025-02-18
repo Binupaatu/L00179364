@@ -1,0 +1,49 @@
+const app = document.getElementById("app");
+const root = ReactDOM.createRoot(app);
+function Profile(Annimal) {
+    return (
+        <div>
+            <h2>{Annimal.name}</h2>
+            <p>{Annimal.age}</p>
+            <p>{Annimal.species}</p>
+        
+            <p>{Annimal.img}</p>
+            <ul>
+                {Annimal.funfacts.map(funfact => {
+                    return <li key={funfact}>{funfact}</li>
+                })}
+            </ul>
+        </div>
+    )
+}
+
+function Annimal()
+{
+    let annimal=[
+    {
+        name: "Kiki",        
+        age: 5,
+        species:"Dog",
+        funfacts:["Loves belly rubs", "can run super fast"],
+        img:"/animalshelter/images/test1.jpg"      
+    },
+    {
+    name: "kitty",        
+    age: 2,
+    species:"cat",
+    funfacts:["Loves to nap", "can jump really high"],
+    img:/animalshelter/images/test2.jpg 
+    }  
+];
+return (
+    <div>
+        {persons.map(annimal => {
+            return (
+                <Profile name={annimal.name} age={annimal.age} hobbies={annimal.species} funfacts={annimal.funfacts} />
+            )
+        })}
+    </div>
+)
+}
+
+root.render(<Annimal />)
