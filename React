@@ -1,25 +1,38 @@
-import { useState } from "react";
-import happy from "../images/happypuppy.png";
-import sad from "../images/sadpuppy.png";
-function petSimulator(){
-    const[isHappy,setIsHappy]=useState(false);
-    const[isSad,setIsSad]=useState(false);
-    function handlefeed()
-    {
-        setIsHappy(!isHappy);
+import { useEffect, useState } from "react";
+function UserList(){
+    const[users,setUsers]=useState([]);
+    const[loading, setLoading]=useState(true);
+
+    useEffect(() =>{
+        fetch("http://localhost:8080/api/users")
+        .then (response => response.json())
+        .then (data =>{
+            setUsers(data["users"]);
+            setLoading(false);
+        })
+    },[]
+    )
+
+    if(loading){
+        return <p>loading....</p>
     }
-    function handleplay()
-    {
-        setIsSad(!isSad);
-    }
-return(
-    <>
-    <img src={isHappy ? happy:isSad} alt="puppy" width="200" height="200"/>
-    <img src={isSad ? isSad:happy} alt="puppy" width="200" height="200"/>
-    <button onClick={handlefeed}>feed</button>
-    <button onClick={handleplay}>play</button>
-    </>
-)
+    return(
+        <div>
+            <h2>The Users</h2>
+           {
+            users.map(user =>{
+                return(
+                    <div key={user.id}>
+                        <h3>{user.name}</h3>
+
+                    </div>
+                )
+            }
+
+            )
+           }
+        </div>
+    )
 
 }
-export default petSimulator;
+export default UserList
