@@ -1,0 +1,41 @@
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import ToDoForm from './components/ToDoForm'
+import viteLogo from '/vite.svg'
+import './App.css'
+
+
+function App() {
+
+const [confirmation, setConfirmation] = useState("");
+const [formData, setFormData] = useState({
+    item: ""
+  });
+   function handleUserFormSubmit(e, data) {
+        e.preventDefault();
+           setFormData(data);
+           fetch("http://localhost:8080/todolist",
+             {
+               method: "POST",
+               body: JSON.stringify(data)
+             }
+           )
+             .then(response => response.json())
+             .then(() => {
+               setConfirmation("Form submitted successfully!");
+               setFormData({
+                 item: ""
+               });
+             }
+             );
+           console.log("Form submitted", data);
+    }
+  return (
+    <>
+
+     <ToDoForm formData={formData} onFormSubmit={handleUserFormSubmit} confirmation={confirmation} />
+    </>
+  )
+}
+
+export default App
