@@ -1,0 +1,109 @@
+ToDoListController.java
+
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("todolist")
+
+public class ToDoListController {
+    @Autowired
+    private ToDoListService toDoListService;
+
+    public ToDoListController(ToDoListService toDoListService) {
+        this.toDoListService = toDoListService;
+    }
+    @GetMapping
+    public List<ToDoList> getAllToDoLists() {
+        return this.toDoListService.getAllToDoLists();
+
+    }
+
+    // adding a new ToDoList
+    @PostMapping
+    public ToDoList addNewToDoList(@RequestBody ToDoList toDoList) {
+        return this.toDoListService.saveToDoList(toDoList);
+    }
+
+}
+
+ToDoListService.java
+package com.example.demo;
+
+import java.util.List;
+
+public class ToDoListService {
+    private ToDoListRepository toDoListRepository;
+
+    public ToDoListService(ToDoListRepository toDoListRepository) {
+        this.toDoListRepository = toDoListRepository;
+    }
+
+    public ToDoList saveToDoList(ToDoList toDoList) {
+        return this.toDoListRepository.save(toDoList);
+    }
+    // getting all ToDos (read)
+    public List<ToDoList> getAllToDoLists() {
+        return (List<ToDoList>) this.toDoListRepository.findAll();
+    }
+
+}
+
+ToDoList.java
+
+package com.example.demo;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="todolist")
+public class ToDoList {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String item;
+
+    public ToDoList() {
+    }
+
+    public ToDoList(long id, String item) {
+        this.id = id;
+        this.item = item;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getItem() {
+        return item;
+    }
+
+    public void setItem(String item) {
+        this.item = item;
+    }
+}
+
+ToDoListRepository.java
+
+package com.example.demo;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+
+public interface ToDoListRepository extends CrudRepository<ToDoList,Long> {
+
+}
+
