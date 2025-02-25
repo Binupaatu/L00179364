@@ -80,3 +80,27 @@ function ToDoForm({formData, onFormSubmit, confirmation}) {
 }
 
 export default ToDoForm;
+
+
+---------
+
+import React from "react";
+
+function ToDoList({ items }) {
+    return (
+        <div>
+            <h2>To-Do List</h2>
+            <ul>
+                {items.length > 0 ? (
+                    items.map((item, index) => (
+                        <li key={index}>{item.item}</li>
+                    ))
+                ) : (
+                    <p>No items found.</p>
+                )}
+            </ul>
+        </div>
+    );
+}
+
+export default ToDoList;
