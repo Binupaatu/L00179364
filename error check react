@@ -123,3 +123,28 @@ export default ToDoList;
     fetch('http://localhost:8080/todolist/${id}',{
 DELETE http://localhost:8080/todolist/$%7Bid%7D 400 (Bad Request)
 (`http://localhost:8080/todolist/${id}`
+
+
+
+Access to fetch at 'http://localhost:8080/todolist/[object%20Object]' from origin 'http://localhost:5173' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.Understand this errorAI
+App.jsx:67 
+            
+            
+           DELETE http://localhost:8080/todolist/[object%20Object] net::ERR_FAILED
+handleDelete @ App.jsx:67
+onClick @ ToDoList.jsx:13
+processDispatchQueue @ react-dom_client.js?v=13abce72:11575
+(anonymous) @ react-dom_client.js?v=13abce72:11986
+batchedUpdates$1 @ react-dom_client.js?v=13abce72:2537
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=13abce72:11681
+dispatchEvent @ react-dom_client.js?v=13abce72:14606
+dispatchDiscreteEvent @ react-dom_client.js?v=13abce72:14587Understand this errorAI
+App.jsx:73 error deleting item :  TypeError: Failed to fetch
+    at handleDelete (App.jsx:67:5)
+    at onClick (ToDoList.jsx:13:52)
+    at processDispatchQueue (react-dom_client.js?v=13abce72:11575:19)
+    at react-dom_client.js?v=13abce72:11986:11
+    at batchedUpdates$1 (react-dom_client.js?v=13abce72:2537:42)
+    at dispatchEventForPluginEventSystem (react-dom_client.js?v=13abce72:11681:9)
+    at dispatchEvent (react-dom_client.js?v=13abce72:14606:13)
+    at dispatchDiscreteEvent (react-dom_client.js?v=13abce72:14587:62)
