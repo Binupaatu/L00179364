@@ -1,4 +1,46 @@
-import { useState } from 'react'
+import React, { useState } from "react";
+
+function ToDoForm({formData, onFormSubmit, confirmation,fetchToDoList}) {
+
+    const [localFormData, setLocalFormData] = useState(formData);
+    function handleSubmit(e,actionType) {
+        e.preventDefault();
+        if(actionType=== "add"){
+            onFormSubmit(e, localFormData);
+            }
+
+        else if(actionType === "list")
+        fetchToDoList();
+    }
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+        setLocalFormData({
+            ...localFormData,
+            [name]: value
+        });
+    }
+    return (
+        <>
+        <form onSubmit={handleSubmit}>
+            <label htmlFor="itemName">ToDo Item: </label>
+            <input type="text" id="item" name="item" value={localFormData.item} onChange={handleChange} required />
+            <button type="submit" onClick={(e)=> handleSubmit(e,"add")}>AddToList</button>
+            <button type="button" onClick={(e)=> handleSubmit(e,"list")}>To-DOList</button>
+        </form>
+        { confirmation ?
+            <p>{confirmation}</p> : ""
+        }
+
+        </>
+    )
+}
+
+export default ToDoForm;
+
+-----
+
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import ToDoForm from './components/ToDoForm'
 import ToDoList from './components/ToDoList'
@@ -44,18 +86,18 @@ const [formData, setFormData] = useState({
                .catch((error) => console.error("error in fetching to-do list: ", error));
 
     }
+useEffect(() => {fetchToDoList();},[]);
   return (
     <>
 
      <ToDoForm formData={formData} onFormSubmit={handleUserFormSubmit} confirmation={confirmation} />
-     <ToDoList items-={toDoItems}/>
+     <ToDoList items={toDoItems}/>
          </>
   )
 }
 
 export default App
--------
-
+------
 import React from "react";
 
 function ToDoList({ items }) {
@@ -76,44 +118,3 @@ function ToDoList({ items }) {
 }
 
 export default ToDoList;
--------
-
-import React, { useState } from "react";
-
-function ToDoForm({formData, onFormSubmit, confirmation,fetchToDoList}) {
-
-    const [localFormData, setLocalFormData] = useState(formData);
-    function handleSubmit(e,actionType) {
-        e.preventDefault();
-        if(actionType=== "add"){
-            onFormSubmit(e, localFormData);
-            }
-
-        else if(actionType === "list")
-        fetchToDoList();
-    }
-
-    function handleChange(e) {
-        const { name, value } = e.target;
-        setLocalFormData({
-            ...localFormData,
-            [name]: value
-        });
-    }
-    return (
-        <>
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="itemName">ToDo Item: </label>
-            <input type="text" id="item" name="item" value={localFormData.name} onChange={handleChange} required />
-            <button type="submit" onClick={(e)=> handleSubmit(e,"add")}>AddToList</button>
-            <button type="button" onClick={(e)=> handleSubmit(e,"list")}>To-DOList</button>
-        </form>
-        { confirmation ?
-            <p>{confirmation}</p> : ""
-        }
-
-        </>
-    )
-}
-
-export default ToDoForm;
