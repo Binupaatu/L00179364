@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 function ToDoForm({formData, onFormSubmit, confirmation,fetchToDoList}) {
 
     const [localFormData, setLocalFormData] = useState(formData);
+    useEffect(()=>{
+    setLocalFormData(formData);
+    },[formData]);
+
     function handleSubmit(e,actionType) {
         e.preventDefault();
         if(actionType=== "add"){
@@ -22,11 +26,11 @@ function ToDoForm({formData, onFormSubmit, confirmation,fetchToDoList}) {
     }
     return (
         <>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => onFormSubmit(e,localFormData)}>
             <label htmlFor="itemName">ToDo Item: </label>
             <input type="text" id="item" name="item" value={localFormData.item} onChange={handleChange} required />
             <button type="submit" onClick={(e)=> handleSubmit(e,"add")}>AddToList</button>
-            <button type="button" onClick={(e)=> handleSubmit(e,"list")}>To-DOList</button>
+            {/*<button type="button" onClick={(e)=> handleSubmit(e,"list")}>To-DOList</button>*/}
         </form>
         { confirmation ?
             <p>{confirmation}</p> : ""
@@ -38,8 +42,8 @@ function ToDoForm({formData, onFormSubmit, confirmation,fetchToDoList}) {
 
 export default ToDoForm;
 
------
 
+-----
 import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import ToDoForm from './components/ToDoForm'
@@ -56,11 +60,26 @@ const [formData, setFormData] = useState({
     item: ""
   });
   const [toDoItems,setToDoItems]=useState([]);
-
+  const [editingItem,setEditingItem]=useState(null);
   function handleUserFormSubmit(e, data) {
         e.preventDefault();
            setFormData(data);
-           fetch("http://localhost:8080/todolist",
+           if(editingItem)
+           {
+               fetch('http://localhost:8080/todolist/${editingItem.id}',{
+               method : "PUT",
+               headers : {
+                   "Content-Type" : "application/json"},
+       body : JSON.stringify(data),
+                   })
+               .then(() =>{
+               setConfirmation("To-Do item updated successfully");
+               setEditingItem(null);
+               fetchToDoList();});
+               }
+           else
+           {
+               fetch("http://localhost:8080/todolist",
              {
                method: "POST",
                headers:{
@@ -75,9 +94,12 @@ const [formData, setFormData] = useState({
                setFormData({
                  item: ""
                });
+           fetchToDoList();
              }
              );
            console.log("Form submitted", data);
+           }
+
     }
         function fetchToDoList(){
                fetch("http://localhost:8080/todolist")
@@ -86,28 +108,51 @@ const [formData, setFormData] = useState({
                .catch((error) => console.error("error in fetching to-do list: ", error));
 
     }
+function handleDelete(id){
+    console.log("Deleting id:",id)
+    fetch(`http://localhost:8080/todolist/${id}`,{
+    method:"DELETE",
+    })
+    .then(() => { setConfirmation("To-Do list item deleted successfully");
+    fetchToDoList();
+    })
+    .catch((error) => console.error("error deleting item : ",error));
+    }
+
+function handleEdit(item){
+    setFormData(item);
+    setEditingItem(item);
+    }
 useEffect(() => {fetchToDoList();},[]);
   return (
     <>
 
-     <ToDoForm formData={formData} onFormSubmit={handleUserFormSubmit} confirmation={confirmation} />
-     <ToDoList items={toDoItems}/>
+     <ToDoForm formData={formData}
+     onFormSubmit={handleUserFormSubmit}
+     confirmation={confirmation}
+      fetchToDoList={fetchToDoList}/>
+    <ToDoList items={toDoItems} onDelete={handleDelete} onEdit={handleEdit}/>
          </>
   )
 }
 
 export default App
-------
+----
 import React from "react";
 
-function ToDoList({ items }) {
+function ToDoList({ items, onDelete, onEdit }) {
     return (
         <div>
             <h2>To-Do List</h2>
             <ul>
                 {items.length > 0 ? (
-                    items.map((item, index) => (
-                        <li key={index}>{item.item}</li>
+                    items.map((item) => (
+                        <li key={item.id}>
+                            {item.item}
+                            <button onClick={() => onEdit(item.id)}>Edit</button>
+                            <button onClick={() => onDelete(item.id)}>Delete</button>
+
+                            </li>
                     ))
                 ) : (
                     <p>No items found.</p>
@@ -118,33 +163,5 @@ function ToDoList({ items }) {
 }
 
 export default ToDoList;
-=-------
-
-    fetch('http://localhost:8080/todolist/${id}',{
-DELETE http://localhost:8080/todolist/$%7Bid%7D 400 (Bad Request)
-(`http://localhost:8080/todolist/${id}`
 
 
-
-Access to fetch at 'http://localhost:8080/todolist/[object%20Object]' from origin 'http://localhost:5173' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.Understand this errorAI
-App.jsx:67 
-            
-            
-           DELETE http://localhost:8080/todolist/[object%20Object] net::ERR_FAILED
-handleDelete @ App.jsx:67
-onClick @ ToDoList.jsx:13
-processDispatchQueue @ react-dom_client.js?v=13abce72:11575
-(anonymous) @ react-dom_client.js?v=13abce72:11986
-batchedUpdates$1 @ react-dom_client.js?v=13abce72:2537
-dispatchEventForPluginEventSystem @ react-dom_client.js?v=13abce72:11681
-dispatchEvent @ react-dom_client.js?v=13abce72:14606
-dispatchDiscreteEvent @ react-dom_client.js?v=13abce72:14587Understand this errorAI
-App.jsx:73 error deleting item :  TypeError: Failed to fetch
-    at handleDelete (App.jsx:67:5)
-    at onClick (ToDoList.jsx:13:52)
-    at processDispatchQueue (react-dom_client.js?v=13abce72:11575:19)
-    at react-dom_client.js?v=13abce72:11986:11
-    at batchedUpdates$1 (react-dom_client.js?v=13abce72:2537:42)
-    at dispatchEventForPluginEventSystem (react-dom_client.js?v=13abce72:11681:9)
-    at dispatchEvent (react-dom_client.js?v=13abce72:14606:13)
-    at dispatchDiscreteEvent (react-dom_client.js?v=13abce72:14587:62)
